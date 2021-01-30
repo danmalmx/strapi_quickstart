@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from 'react'
 import './App.css';
 
 import Post from './components/Post'
 
-const posts = [
+const mockPosts = [
   {
     likes: 10,
     description: 'Just plain old me. Well, not just!!',
@@ -21,6 +22,19 @@ const posts = [
 
 
 function App() {
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const getPosts = async () => {
+      const res = await fetch('http://localhost:1337/posts');
+      const data = await res.json();
+      setPosts(data)
+    }
+    getPosts();
+
+  }, [])
+
   return (
     <div className="App">
       {posts.map(post => (
