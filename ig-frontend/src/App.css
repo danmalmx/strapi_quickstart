@@ -16,3 +16,11 @@ body {
   max-width: 200px;
   margin: 0 auto;
 }
+
+a {
+  text-decoration: none;
+}
+
+a.active {
+  text-decoration: underline;
+}
