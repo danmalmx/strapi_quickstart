@@ -33,9 +33,7 @@ const Create = () => {
 
       console.log(data);
     } catch (error) {
-      console.log("Exception:", error);
       setError(error);
-
     }
   }
 
