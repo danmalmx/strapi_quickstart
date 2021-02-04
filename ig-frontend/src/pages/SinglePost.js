@@ -6,6 +6,17 @@ const SinglePost = ({ match, history }) => {
 
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
+  const [description, setDescription] = useState('');
+
+  const fetchPost = async () => {
+    const res = await fetch(`http://localhost:1337/posts/${id}`);
+    const data = await res.json()
+    console.log(data);
+    setPost(data);
+    setDescription(data.description)
+    setLoading(false);
+  }
 
   const handleDelete = async () => {
     const res = await fetch(`http://localhost:1337/posts/${id}`, {
@@ -15,14 +26,24 @@ const SinglePost = ({ match, history }) => {
     history.push('/')
   }
 
+  const handleEditSubmit = async (event) => {
+    event.preventDefault();
+
+    const res = await fetch(`http://localhost:1337/posts/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        description,
+      })
+    })
+
+    const data = await res.json();
+    console.log('handleEditSubmit', data);
+    fetchPost();
+  }
   useEffect(() => {
-    const fetchPost = async () => {
-      const res = await fetch(`http://localhost:1337/posts/${id}`);
-      const data = await res.json()
-      console.log(data);
-      setPost(data);
-      setLoading(false);
-    }
     fetchPost();
   }, [])
   return (
@@ -40,6 +61,17 @@ const SinglePost = ({ match, history }) => {
               likes={post.likes}
             />
             <button onClick={handleDelete}>Delete this post</button>
+            <button onClick={() => setEdit(true)}>Edit this post</button>
+            {edit &&
+              <form onSubmit={handleEditSubmit}>
+                <input
+                  value={description}
+                  placeholder="New description"
+                  onChange={(event) => setDescription(event.target.value)}
+                />
+                <button>Confirm</button>
+              </form>
+            }
             </>
           }
           {!post &&
