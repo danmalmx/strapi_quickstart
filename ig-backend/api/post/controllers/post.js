@@ -14,12 +14,12 @@ module.exports = {
     if (ctx.is('multipart')) {
       const { data, files } = parseMultipartData(ctx);
 
-      if(!data || !data.description)  {
+      if (!data || !data.description)  {
         ctx.throw(400, "Please write a description");
       }
 
-      if(!files || !files.length) {
-        ctx.throw(400, "Plelase add an image");
+      if (!files || !files.image) {
+        ctx.throw(400, "Please add an image");
       }
         entity = await strapi.services.post.create({...data, likes: 0}, { files });
       } else {

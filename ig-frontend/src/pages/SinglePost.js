@@ -24,7 +24,10 @@ const SinglePost = ({ match, history }) => {
 
   const handleDelete = async () => {
     const res = await fetch(`http://localhost:1337/posts/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${user.jwt}`
+      }
     });
     const data = await res.json();
     history.push('/')
@@ -36,7 +39,8 @@ const SinglePost = ({ match, history }) => {
     const res = await fetch(`http://localhost:1337/posts/${id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.jwt}`
       },
       body: JSON.stringify({
         description,
@@ -64,17 +68,22 @@ const SinglePost = ({ match, history }) => {
               url={post.image && post.image.url}
               likes={post.likes}
             />
-            <button onClick={handleDelete}>Delete this post</button>
-            <button onClick={() => setEdit(true)}>Edit this post</button>
-            {edit &&
-              <form onSubmit={handleEditSubmit}>
-                <input
-                  value={description}
-                  placeholder="New description"
-                  onChange={(event) => setDescription(event.target.value)}
-                />
-                <button>Confirm</button>
-              </form>
+            {user &&
+              <>
+                <button onClick={handleDelete}>Delete this post</button>
+                <button onClick={() => setEdit(true)}>Edit this post</button>
+                {edit &&
+                  <form onSubmit={handleEditSubmit}>
+                    <input
+                      value={description}
+                      placeholder="New description"
+                      onChange={(event) => setDescription(event.target.value)}
+                    />
+                    <button>Confirm</button>
+                  </form>
+                }
+              </>
+
             }
             </>
           }

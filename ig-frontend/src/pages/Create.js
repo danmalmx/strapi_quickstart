@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { UserContext } from '../context/UserContext'
 
 const Create = () => {
 
@@ -6,8 +7,15 @@ const Create = () => {
   const [file, setFile] = useState(0);
   const [error, setError] = useState('');
 
+  const { user } = useContext(UserContext);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if(!user) {
+      setError('Please log in first')
+      return;
+    }
 
     if(!description) {
       setError('Please add a description')
@@ -27,6 +35,9 @@ const Create = () => {
     try {
       const res = await fetch('http://localhost:1337/posts',  {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user.jwt}`
+        },
         body: formData,
       })
       const data = await res.json();
